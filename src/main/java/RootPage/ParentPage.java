@@ -1,38 +1,20 @@
 package RootPage;
 
 import com.google.common.base.Function;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ParentPage {
     private WebDriver driver;
-    private CSVReader reader;
-    private List<String[]> locators;
 
     public ParentPage(WebDriver driver){
         this.driver = driver;
-        try {
-            reader = new CSVReader(new FileReader("src\\main\\java\\" + this.getClass().getPackage().getName() + "\\locators.csv"));
-            reader.skip(1);
-            locators = reader.readAll();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CsvException e) {
-            e.printStackTrace();
-        }
     }
 
     protected void waitForPageLoaded() {
@@ -103,4 +85,29 @@ public class ParentPage {
         waitForPageLoaded();
         return driver.findElements(By.xpath(locator));
     }
+
+    protected void check(String description, String actualValue, String expectedValue) {
+        System.out.println(description);
+        System.out.println("Actual value: '" + actualValue + "', expected value: '" + expectedValue + "'");
+        if (actualValue.equals(expectedValue)) {
+            System.out.println("Passed: Actual equals expected value");
+        } else {
+            System.out.println("Warning: Actual not equals");
+        }
+        System.out.println();
+    }
+
+    protected void check(String description, boolean actualValue, boolean expectedValue) {
+        System.out.println(description);
+        System.out.println("Actual value: '" + actualValue + "', expected value: '" + expectedValue + "'");
+        if (actualValue == expectedValue) {
+            System.out.println("Passed: Actual equals expected value");
+        } else {
+            System.out.println("Warning: Actual not equals");
+        }
+        System.out.println();
+    }
+
+
+
 }
