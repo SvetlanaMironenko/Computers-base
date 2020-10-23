@@ -2,11 +2,13 @@ package MyTests;
 
 import CompanyComputer.PageHome;
 import CompanyComputer.PageNewComputer;
+import CompanyComputer.PageSearchResult;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 public class CompanyComputerTests {
@@ -14,6 +16,7 @@ public class CompanyComputerTests {
     private WebDriver driver;
     private PageHome pageHome;
     private PageNewComputer pageNewComputer;
+    private PageSearchResult pageSearchResult;
 
     @BeforeMethod
     public void setUp() {
@@ -25,6 +28,7 @@ public class CompanyComputerTests {
 
         pageHome = new PageHome(driver);
         pageNewComputer = new PageNewComputer(driver);
+        pageSearchResult = new PageSearchResult(driver);
 
     }
 
@@ -32,19 +36,24 @@ public class CompanyComputerTests {
     public void checkAddComputerData() {
         driver.get("http://computer-database.gatling.io/computers");
         pageHome.clickOnTheAddComputerButton();
-        pageNewComputer.fillComputerData();
-        pageNewComputer.checkComputerData("SvetaAsus");
+        LocalDate currentDate = LocalDate.now();
+        LocalDate introducedDate = currentDate.minusYears(10);
+        pageNewComputer.fillComputerData("SvetaAsus", introducedDate, currentDate, "Tandy Corporation");
+        pageNewComputer.checkComputerData("SvetaAsus", introducedDate, currentDate, "Tandy Corporation");
         pageNewComputer.pushTheButtonCreateTheComputer();
-        pageNewComputer.checkThePhraseAboutAddingAComputer();
-        pageNewComputer.searchTheComputerData("SvetaAsus");
-        pageNewComputer.checkThePhraseNothingToDisplay();
+        pageHome.checkThePhraseAboutAddingAComputer();
+        pageHome.searchTheComputerData("SvetaAsus");
+        pageSearchResult.checkThePhraseNothingToDisplay();
+        pageSearchResult.checkComputerData("SvetaAsus", introducedDate, currentDate, "Tandy Corporation");
     }
 
     @Test
     public void checkingTheExistingComputer() {
         driver.get("http://computer-database.gatling.io/computers");
-        pageNewComputer.searchTheComputerData("ASCI White");
-        pageNewComputer.checkComputerDate("ASCI White");
+        pageHome.searchTheComputerData("ASCI White");
+        LocalDate currentDate = LocalDate.now();
+        LocalDate introducedDate = currentDate.minusYears(10);
+        pageSearchResult.checkComputerData("ASCI White", introducedDate, currentDate, "IBM");
     }
 
 
